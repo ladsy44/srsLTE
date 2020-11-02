@@ -24,7 +24,7 @@ if(RF_FOUND)
   target_link_libraries(srslte_rf_utils srslte_phy)
 
   # Include common RF files
-  set(SOURCES_RF "")
+  set(SOURCES_RF "" my_zmq_socket.h my_zmq_socket.cpp)
   list(APPEND SOURCES_RF rf_imp.c)
 
   if (UHD_FOUND)

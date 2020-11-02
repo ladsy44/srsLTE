@@ -1,8 +1,16 @@
-//
-// Created by max on 01.11.2020.
-//
+#include <string>
+#include <zmq.h>
 
-#ifndef SRSLTE_MY_ZMQ_SOCKET_H
-#define SRSLTE_MY_ZMQ_SOCKET_H
+class MyZMQsock{
+private:
+  void *context;
+  void *socket;
 
-#endif // SRSLTE_MY_ZMQ_SOCKET_H
+  std::string address = "tcp://127.0.0.1:";
+public:
+  MyZMQsock(std::string port);
+  ~MyZMQsock();
+  void open(std::string port);
+  void send(const void *buf, size_t len, int flags);
+  void close();
+};
