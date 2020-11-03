@@ -41,8 +41,6 @@
 
 #include "ue_metrics_interface.h"
 
-#include "lib/src/phy/rf/zmq_sock_vars.h"
-
 namespace srsue {
 
 /*******************************************************************************

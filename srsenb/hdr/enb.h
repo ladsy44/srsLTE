@@ -52,8 +52,6 @@
 #include "srslte/interfaces/sched_interface.h"
 #include "srslte/interfaces/ue_interfaces.h"
 
-#include "lib/src/phy/rf/zmq_sock_vars.h"
-
 
 namespace srsenb {
 
