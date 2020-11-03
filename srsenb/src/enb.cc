@@ -55,8 +55,8 @@ int enb::init(const all_args_t& args_, srslte::logger* logger_)
   log->info("%s", get_build_string().c_str());
 
   // Open my ZMQ sockets !!
-  myZmqSockTX = new MyZMQsock("4409");
-  myZmqSockRX = new MyZMQsock("4410");
+  myZmqSockTX.open("4409");
+  myZmqSockRX.open("4410");
 
   // Validate arguments
   if (parse_args(args_)) {

@@ -62,8 +62,8 @@ int ue::init(const all_args_t& args_, srslte::logger* logger_)
   log.info("%s", get_build_string().c_str());
 
   // Open my ZMQ sockets !!
-  myZmqSockTX = new MyZMQsock("4411");
-  myZmqSockRX = new MyZMQsock("4412");
+  myZmqSockTX.open("4411");
+  myZmqSockRX.open("4412");
 
   // Validate arguments
   if (parse_args(args_)) {
