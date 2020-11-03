@@ -62,8 +62,19 @@ int ue::init(const all_args_t& args_, srslte::logger* logger_)
   log.info("%s", get_build_string().c_str());
 
   // Open my ZMQ sockets !!
-  myZmqSockTX.open("4411");
-  myZmqSockRX.open("4412");
+  /*openMyZmq(myZmqSockTX, "tcp://127.0.0.1:4411");
+  openMyZmq(myZmqSockRX, "tcp://127.0.0.1:4412");*/
+  myZmqSockTX.context = zmq_init(1);
+  myZmqSockTX.socket = zmq_socket(myZmqSockTX.context, ZMQ_PUB);
+  myZmqSockTX.address = new char[strlen("tcp://127.0.0.1:4411") + 1];
+  strcat(myZmqSockTX.address, "tcp://127.0.0.1:4411");
+  zmq_connect(myZmqSockTX.socket, "tcp://127.0.0.1:4411");
+
+  myZmqSockRX.context = zmq_init(1);
+  myZmqSockRX.socket = zmq_socket(myZmqSockTX.context, ZMQ_PUB);
+  myZmqSockRX.address = new char[strlen("tcp://127.0.0.1:4412") + 1];
+  strcat(myZmqSockRX.address, "tcp://127.0.0.1:4412");
+  zmq_connect(myZmqSockRX.socket, "tcp://127.0.0.1:4412");
 
   // Validate arguments
   if (parse_args(args_)) {

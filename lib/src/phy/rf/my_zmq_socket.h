@@ -15,7 +15,9 @@ struct MyZMQsock{
 //public:
   //MyZMQsock(char* port);
   //~MyZMQsock();
-  void open(const char* port);
-  void close();
-  void send(const void *buf, size_t len, int flags);
+
 };
+
+void openMyZmq(struct MyZMQsock my, const char* address);
+void closeMyZmq(struct MyZMQsock my);
+void sendMyZmq(struct MyZMQsock my, const void *buf, size_t len, int flags);

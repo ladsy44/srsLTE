@@ -54,9 +54,20 @@ int enb::init(const all_args_t& args_, srslte::logger* logger_)
   log->set_level(srslte::LOG_LEVEL_INFO);
   log->info("%s", get_build_string().c_str());
 
-  // Open my ZMQ sockets !!
-  myZmqSockTX.open("4409");
-  myZmqSockRX.open("4410");
+  // Open my ZMQ sockets !
+  /*openMyZmq(myZmqSockTX, "tcp://127.0.0.1:4409");
+  openMyZmq(myZmqSockRX, "tcp://127.0.0.1:4410");*/
+  myZmqSockTX.context = zmq_init(1);
+  myZmqSockTX.socket = zmq_socket(myZmqSockTX.context, ZMQ_PUB);
+  myZmqSockTX.address = new char[strlen("tcp://127.0.0.1:4409") + 1];
+  strcat(myZmqSockTX.address, "tcp://127.0.0.1:4409");
+  zmq_connect(myZmqSockTX.socket, "tcp://127.0.0.1:4409");
+
+  myZmqSockRX.context = zmq_init(1);
+  myZmqSockRX.socket = zmq_socket(myZmqSockTX.context, ZMQ_PUB);
+  myZmqSockRX.address = new char[strlen("tcp://127.0.0.1:4410") + 1];
+  strcat(myZmqSockRX.address, "tcp://127.0.0.1:4410");
+  zmq_connect(myZmqSockRX.socket, "tcp://127.0.0.1:4410");
 
   // Validate arguments
   if (parse_args(args_)) {
