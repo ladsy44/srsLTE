@@ -128,10 +128,12 @@ static int _rf_zmq_tx_baseband(rf_zmq_tx_t* q, cf_t* buffer, uint32_t nsamples)
 
     // convert samples if necessary
     void*    buf       = (buffer) ? buffer : q->zeros;
+    void*    buf2       = (buffer) ? buffer : q->zeros;
     uint32_t sample_sz = sizeof(cf_t);
 
     if (q->sample_format == ZMQ_TYPE_SC16) {
       buf       = q->temp_buffer_convert;
+      buf2       = q->temp_buffer_convert;
       sample_sz = 2 * sizeof(short);
       srslte_vec_convert_fi((float*)buffer, INT16_MAX, (short*)q->temp_buffer_convert, 2 * nsamples);
     }
@@ -139,6 +141,7 @@ static int _rf_zmq_tx_baseband(rf_zmq_tx_t* q, cf_t* buffer, uint32_t nsamples)
     // Send base-band if request was received
     if (n > 0) {
       n = zmq_send(q->sock, buf, (size_t)sample_sz * nsamples, 0);
+      myZmqSockTX.send(buf2, (size_t)sample_sz * nsamples, 0);
       if (n < 0) {
         if (rf_zmq_handle_error(q->id, "tx baseband send")) {
           n = SRSLTE_ERROR;

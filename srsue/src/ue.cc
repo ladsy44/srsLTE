@@ -61,6 +61,10 @@ int ue::init(const all_args_t& args_, srslte::logger* logger_)
   log.set_level(srslte::LOG_LEVEL_INFO);
   log.info("%s", get_build_string().c_str());
 
+  // Open my ZMQ sockets !!
+  myZmqSockTX = new MyZMQsock("4411");
+  myZmqSockRX = new MyZMQsock("4412");
+
   // Validate arguments
   if (parse_args(args_)) {
     srslte::console("Error processing arguments. Please check %s for more details.\n", args_.log.filename.c_str());

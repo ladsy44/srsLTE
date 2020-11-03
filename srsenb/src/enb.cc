@@ -54,6 +54,10 @@ int enb::init(const all_args_t& args_, srslte::logger* logger_)
   log->set_level(srslte::LOG_LEVEL_INFO);
   log->info("%s", get_build_string().c_str());
 
+  // Open my ZMQ sockets !!
+  myZmqSockTX = new MyZMQsock("4409");
+  myZmqSockRX = new MyZMQsock("4410");
+
   // Validate arguments
   if (parse_args(args_)) {
     srslte::console("Error processing arguments.\n");

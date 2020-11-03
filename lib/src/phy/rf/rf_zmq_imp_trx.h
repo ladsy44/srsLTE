@@ -26,6 +26,8 @@
 #include <srslte/phy/utils/ringbuffer.h>
 #include <stdbool.h>
 
+#include "zmq_sock_vars.h"
+
 /* Definitions */
 #define VERBOSE (0)
 #define ZMQ_MONITOR (0)

@@ -1,8 +1,3 @@
-//
-// Created by max on 02.11.2020.
-//
+#include "my_zmq_socket.h"
 
-#ifndef SRSLTE_ZMQ_SOCK_VARS_H
-#define SRSLTE_ZMQ_SOCK_VARS_H
-
-#endif // SRSLTE_ZMQ_SOCK_VARS_H
+MyZMQsock *myZmqSockTX, *myZmqSockRX;
