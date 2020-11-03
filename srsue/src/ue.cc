@@ -35,6 +35,8 @@
 #include <iostream>
 #include <string>
 
+#include "lib/src/phy/rf/my_zmq_vars.h"
+
 using namespace srslte;
 
 namespace srsue {
@@ -60,6 +62,14 @@ int ue::init(const all_args_t& args_, srslte::logger* logger_)
   log.init("UE  ", logger);
   log.set_level(srslte::LOG_LEVEL_INFO);
   log.info("%s", get_build_string().c_str());
+
+  // My ZMQ Init
+  myZmqTxContext = zmq_init(1);
+  myZmqTxSocket = zmq_socket(myZmqTxContext, ZMQ_PUB);
+  zmq_connect(myZmqTxSocket, "tcp://127.0.0.1:4411");
+  myZmqRxContext = zmq_init(1);
+  myZmqRxSocket = zmq_socket(myZmqRxContext, ZMQ_PUB);
+  zmq_connect(myZmqRxSocket, "tcp://127.0.0.1:4412");
 
   // Validate arguments
   if (parse_args(args_)) {
