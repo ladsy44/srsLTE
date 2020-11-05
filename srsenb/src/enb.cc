@@ -57,12 +57,12 @@ int enb::init(const all_args_t& args_, srslte::logger* logger_)
   log->info("%s", get_build_string().c_str());
 
   // My ZMQ Init
-  myZmqTxContext = zmq_init(1);
+  /*myZmqTxContext = zmq_init(1);
   myZmqTxSocket = zmq_socket(myZmqTxContext, ZMQ_PUB);
   zmq_connect(myZmqTxSocket, "tcp://127.0.0.1:4409");
   myZmqRxContext = zmq_init(1);
   myZmqRxSocket = zmq_socket(myZmqRxContext, ZMQ_PUB);
-  zmq_connect(myZmqRxSocket, "tcp://127.0.0.1:4410");
+  zmq_connect(myZmqRxSocket, "tcp://127.0.0.1:4410");*/
 
   // Validate arguments
   if (parse_args(args_)) {

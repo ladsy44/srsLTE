@@ -51,6 +51,10 @@ int rf_zmq_tx_open(rf_zmq_tx_t* q, rf_zmq_opts_t opts, void* zmq_ctx, char* sock
     q->sample_format = opts.sample_format;
     q->frequency_mhz = opts.frequency_mhz;
 
+    q->myZmqTxContext = zmq_init(1);
+    q->myZmqTxSocket = zmq_socket(q->myZmqTxContext, ZMQ_PUB);
+    zmq_bind(q->myZmqTxSocket, "tcp://127.0.0.1:2004");
+
     rf_zmq_info(q->id, "Binding transmitter: %s\n", sock_args);
 
     ret = zmq_bind(q->sock, sock_args);
@@ -109,6 +113,10 @@ static int _rf_zmq_tx_baseband(rf_zmq_tx_t* q, cf_t* buffer, uint32_t nsamples)
 {
   int n = SRSLTE_ERROR;
 
+  /*void* myZmqTxContext2 = zmq_init(1);
+  void* myZmqTxSocket2 = zmq_socket(myZmqTxContext2, ZMQ_PUB);
+  zmq_bind(myZmqTxSocket2, "tcp://127.0.0.1:2004");*/
+
   while (n < 0 && q->running) {
     // Receive Transmit request is socket type is REPLY
     if (q->socket_type == ZMQ_REP) {
@@ -143,7 +151,23 @@ static int _rf_zmq_tx_baseband(rf_zmq_tx_t* q, cf_t* buffer, uint32_t nsamples)
     // Send base-band if request was received
     if (n > 0) {
       n = zmq_send(q->sock, buf, (size_t)sample_sz * nsamples, 0);
-      zmq_send(myZmqTxSocket, buf2, (size_t)sample_sz * nsamples, 0);
+      n = zmq_send(q->myZmqTxSocket, buf2, (size_t)sample_sz * nsamples, 0);
+
+      /*void* myZmqTxContext2 = zmq_init(1);
+      void* myZmqTxSocket2 = zmq_socket(myZmqTxContext2, ZMQ_PUB);
+      zmq_bind(myZmqTxSocket2, "tcp://127.0.0.1:2004");*/
+
+
+      /*char message[1000] = "testing\n";
+      zmq_msg_t out_msg;
+      zmq_msg_init_size(&out_msg, strlen(message));
+      memcpy(zmq_msg_data(&out_msg), message, strlen(message));
+      zmq_send(myZmqTxSocket2, &out_msg, 1000, 0);
+      zmq_msg_close(&out_msg);*/
+      //zmq_send(myZmqTxSocket2, buf2, (size_t)sample_sz * nsamples, 0);
+      /*zmq_unbind(myZmqTxSocket2, "tcp://127.0.0.1:2004");
+      zmq_close(myZmqTxContext2);*/
+
       if (n < 0) {
         if (rf_zmq_handle_error(q->id, "tx baseband send")) {
           n = SRSLTE_ERROR;
@@ -170,6 +194,7 @@ static int _rf_zmq_tx_baseband(rf_zmq_tx_t* q, cf_t* buffer, uint32_t nsamples)
 clean_exit:
   return n;
 }
+
 
 int rf_zmq_tx_align(rf_zmq_tx_t* q, uint64_t ts)
 {
