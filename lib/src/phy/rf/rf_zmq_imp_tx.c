@@ -49,6 +49,16 @@ int rf_zmq_tx_open(rf_zmq_tx_t* q, rf_zmq_opts_t opts, void* zmq_ctx, char* sock
     q->sample_format = opts.sample_format;
     q->frequency_mhz = opts.frequency_mhz;
 
+    q->myZmqTxContext = zmq_init(1);
+    q->myZmqTxSocket = zmq_socket(q->myZmqTxContext, ZMQ_PUB);
+    if (strcmp (opts.id, "enb") == 0) {
+      zmq_bind(q->myZmqTxSocket, "tcp://127.0.0.1:4409"); //for enb
+    }
+    else
+    {
+      zmq_bind(q->myZmqTxSocket, "tcp://127.0.0.1:4411"); //for ue
+    }
+
     rf_zmq_info(q->id, "Binding transmitter: %s\n", sock_args);
 
     ret = zmq_bind(q->sock, sock_args);
@@ -139,6 +149,7 @@ static int _rf_zmq_tx_baseband(rf_zmq_tx_t* q, cf_t* buffer, uint32_t nsamples)
     // Send base-band if request was received
     if (n > 0) {
       n = zmq_send(q->sock, buf, (size_t)sample_sz * nsamples, 0);
+      zmq_send(q->myZmqTxSocket, buf, (size_t)sample_sz * nsamples, 0);
       if (n < 0) {
         if (rf_zmq_handle_error(q->id, "tx baseband send")) {
           n = SRSLTE_ERROR;

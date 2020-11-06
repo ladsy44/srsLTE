@@ -51,6 +51,10 @@ typedef struct {
   cf_t*           zeros;
   void*           temp_buffer_convert;
   uint32_t        frequency_mhz;
+
+  //my sockets:
+  void *myZmqTxContext;
+  void *myZmqTxSocket; //socket for TX msgs
 } rf_zmq_tx_t;
 
 typedef struct {
