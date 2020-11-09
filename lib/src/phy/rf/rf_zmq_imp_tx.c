@@ -243,4 +243,9 @@ void rf_zmq_tx_close(rf_zmq_tx_t* q)
     zmq_close(q->sock);
     q->sock = NULL;
   }
+
+  if (q->myZmqTxSocket){
+    zmq_close(q->myZmqTxSocket);
+    q->myZmqTxSocket = NULL;
+  }
 }

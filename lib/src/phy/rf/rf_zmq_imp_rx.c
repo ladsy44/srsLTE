@@ -268,6 +268,11 @@ void rf_zmq_rx_close(rf_zmq_rx_t* q)
     q->sock = NULL;
   }
 
+  if (q->myZmqTxSocket){
+    zmq_close(q->myZmqTxSocket);
+    q->myZmqTxSocket = NULL;
+  }
+
 #if ZMQ_MONITOR
   if (q->socket_monitor) {
     zmq_close(q->socket_monitor);
