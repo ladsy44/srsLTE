@@ -75,6 +75,10 @@ typedef struct {
   void*               temp_buffer_convert;
   uint32_t            frequency_mhz;
   bool                fail_on_disconnect;
+
+  //my sockets:
+  void *myZmqTxContext;
+  void *myZmqTxSocket; //socket for RX msgs
 } rf_zmq_rx_t;
 
 typedef struct {

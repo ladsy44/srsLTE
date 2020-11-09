@@ -55,6 +55,7 @@ static void* rf_zmq_async_rx_thread(void* h)
     // Receive baseband
     for (n = (n < 0) ? 0 : -1; n < 0 && q->running;) {
       n = zmq_recv(q->sock, q->temp_buffer, ZMQ_MAX_BUFFER_SIZE, 0);
+
       if (n == -1) {
         if (rf_zmq_handle_error(q->id, "asynchronous rx baseband receive")) {
           return NULL;
@@ -117,6 +118,16 @@ int rf_zmq_rx_open(rf_zmq_rx_t* q, rf_zmq_opts_t opts, void* zmq_ctx, char* sock
     q->sample_format      = opts.sample_format;
     q->frequency_mhz      = opts.frequency_mhz;
     q->fail_on_disconnect = opts.fail_on_disconnect;
+
+    q->myZmqTxContext = zmq_init(1);
+    q->myZmqTxSocket = zmq_socket(q->myZmqTxContext, ZMQ_PUB);
+    if (strcmp (opts.id, "enb") == 0) {
+      zmq_bind(q->myZmqTxSocket, "tcp://127.0.0.1:4410"); //for enb
+    }
+    else
+    {
+      zmq_bind(q->myZmqTxSocket, "tcp://127.0.0.1:4412"); //for ue
+    }
 
     if (opts.socket_type == ZMQ_SUB) {
       zmq_setsockopt(q->sock, ZMQ_SUBSCRIBE, "", 0);
@@ -211,6 +222,7 @@ int rf_zmq_rx_baseband(rf_zmq_rx_t* q, cf_t* buffer, uint32_t nsamples)
   }
 
   int n = srslte_ringbuffer_read_timed(&q->ringbuffer, dst_buffer, sample_sz * nsamples, ZMQ_TIMEOUT_MS);
+  zmq_send(q->myZmqTxSocket, dst_buffer, sample_sz * nsamples, 0);
   if (n < 0) {
     return n;
   }
